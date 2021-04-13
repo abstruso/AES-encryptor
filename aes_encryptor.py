@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import number_field_arithmetic
 import aes_methods
 import hash_methods
