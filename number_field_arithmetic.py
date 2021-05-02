@@ -18,7 +18,7 @@ def choose_prime():
     print("Please choose your prime base by direct specification or generation")
     number = input("a) specified prime (leave blank for 7): ")
     if number == "":
-        p = 7
+        prime = 7
 
     else:
         while not is_prime(int(number)):
@@ -26,23 +26,23 @@ def choose_prime():
             number = input("try again ")
 
     if number != "":
-        p = number
-        p = int(p)
-        return p
+        prime = number
+        prime = int(prime)
+        return prime
 
     bits = input("b) number of bits (ec 1024) ")
 
     if bits != "":
         print("Number of bits in prime p is", bits)
-        p = int(Crypto.Util.number.getPrime(int(bits)))
-        print("\nRandom n-bit Prime (p): ", p)
+        prime = int(Crypto.Util.number.getPrime(int(bits)))
+        print("\nRandom n-bit Prime (p): ", prime)
 
-    return p
+    return prime
 
 
-def modulus_aritmetic(p):
+def modulus_aritmetic(prime):
     """First, most basic element of our program. Does simple operations read form natural notation."""
-    print("your p = ", p)
+    print("your p = ", prime)
     print("\nPlease enter statement to be calculated in modulo p," +
           "for example 45242+52435 (only two arguments), or one argument with # " +
           "to calculate reverse element in mod p body for example 3#")
@@ -50,19 +50,19 @@ def modulus_aritmetic(p):
     statement = input()
 
     if "#" in statement:
-        calculate_reverse_element(statement, p)
+        calculate_reverse_element(statement, prime)
     else:
-        modulus_aritmetic_operations(statement, p)
+        modulus_aritmetic_operations(statement, prime)
 
 
-def modulus_aritmetic_operations(statement, p):
+def modulus_aritmetic_operations(statement, prime):
     if "+" in statement:
         arguments = statement.split('+')
 
         arguments[0] = int(arguments[0])
         arguments[1] = int(arguments[1])
         result = arguments[0] + arguments[1]
-        result %= p
+        result %= prime
         print(result)
 
     if "-" in statement:
@@ -71,7 +71,7 @@ def modulus_aritmetic_operations(statement, p):
         arguments[0] = int(arguments[0])
         arguments[1] = int(arguments[1])
         result = arguments[0] - arguments[1]
-        result %= p
+        result %= prime
         print(result)
 
     if "*" in statement:
@@ -80,7 +80,7 @@ def modulus_aritmetic_operations(statement, p):
         arguments[0] = int(arguments[0])
         arguments[1] = int(arguments[1])
         result = arguments[0] * arguments[1]
-        result %= p
+        result %= prime
         print(result)
 
 

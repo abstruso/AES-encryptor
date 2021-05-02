@@ -24,3 +24,4 @@ docker run -v $(pwd):/usr/src/app -ti --name aes-encryptor-container aes-encrypt
 ```
 Parameter `-v` mounts location from host machine as enviroment of container and `-ti` stands for interactive terminal.
 
+

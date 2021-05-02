@@ -9,19 +9,19 @@ def aes_demonstration():
     print("This method operates on file example_file.txt")
     plain_filename = "example_file.txt"
     enc_filename = plain_filename + ".aes"
-    f = open(plain_filename, "w+")  # creates a file with permission to write
-    f.write("This is sample content")
+    file = open(plain_filename, "w+")  # creates a file with permission to write
+    file.write("This is sample content")
     print("part I - file encryption and decryption")
 
     try:
-        f = open(plain_filename)
+        file = open(plain_filename)
     except IOError:
         print(sty.fg.yellow + "[!] " + sty.fg.yellow + "File not accessible, creating new one")
-        f = open("example_file.txt", "w+")
-        f.write("This is sample content")
-        f.close()
+        file = open("example_file.txt", "w+")
+        file.write("This is sample content")
+        file.close()
     finally:
-        aes_encryption(input_key(), f, enc_filename)
+        aes_encryption(input_key(), file, enc_filename)
         print(plain_filename, "has now encrypted version", enc_filename)
         input("Press Enter to proceed with decryption and delete orginal file")
         aes_decryption(input_key(), enc_filename)
@@ -30,7 +30,8 @@ def aes_demonstration():
 def input_key():
     """Prompts user about key and adjusts it length"""
     import hashlib
-    password = input("Please enter password: ").encode('utf-8')
+    import getpass
+    password = getpass.getpass("Please enter password: ").encode('utf-8')
     key = hashlib.sha256(password).digest()
     return key
 
@@ -38,33 +39,33 @@ def input_key():
 def generate_random_iv():
     """Generates random 16 bytes initial vector"""
     import Crypto.Random.random
-    iv = "".join(chr(Crypto.Random.random.randint(32, 127)) for i in range(16))
-    return iv.encode('utf-8')
+    initialization_vector = "".join(chr(Crypto.Random.random.randint(32, 127)) for i in range(16))
+    return initialization_vector.encode('utf-8')
 
 
 def file_encryption(file_name):
-    f = open(file_name)
-    f.close()
-    aes_encryption(input_key(), f, f.name + ".aes")
+    file = open(file_name)
+    file.close()
+    aes_encryption(input_key(), file, file.name + ".aes")
 
 
-def aes_encryption(key, f, enc_filename):
+def aes_encryption(key, file, enc_filename):
     """Short demonstration of AES-128 encrypting text files"""
     import os
     import struct
     import Crypto.Cipher.AES
     chunksize = 65536
-    iv = generate_random_iv()
-    print(sty.fg.green + "[+] " + sty.fg.rs + "iv:", iv)
-    encryptor = Crypto.Cipher.AES.new(key, Crypto.Cipher.AES.MODE_CBC, iv)
-    filesize = os.path.getsize(f.name)
+    initialization_vector = generate_random_iv()
+    print(sty.fg.green + "[+] " + sty.fg.rs + "initialization vector:", initialization_vector)
+    encryptor = Crypto.Cipher.AES.new(key, Crypto.Cipher.AES.MODE_CBC, initialization_vector)
+    filesize = os.path.getsize(file.name)
 
-    with open(f.name, 'rb') as infile:
+    with open(file.name, 'rb') as infile:
         with open(enc_filename, 'wb') as outfile:
             outfile.write(struct.pack('<Q', filesize))
             # struct.pack('<ii', long, long >> 32) is equivalent to '<q'
-            outfile.write(iv)
-            outfile.write(hash_methods.file_hash(f.name))
+            outfile.write(initialization_vector)
+            outfile.write(hash_methods.file_hash(file.name))
 
             while True:
                 chunk = infile.read(chunksize)
@@ -76,10 +77,11 @@ def aes_encryption(key, f, enc_filename):
                     chunk += chunk_padding
 
                 outfile.write(encryptor.encrypt(chunk))
-    print(sty.fg.green+"[+] "+sty.fg.rs+"File successfully encrypted")
+    print(sty.fg.green + "[+] " + sty.fg.rs + "File successfully encrypted")
 
 
 def file_decryption(file_name):
+    check_extension(file_name)
     aes_decryption(input_key(), file_name)
 
 
@@ -95,8 +97,8 @@ def aes_decryption(key, enc_filename):
 
     with open(enc_filename, 'rb') as infile:
         origsize = struct.unpack('<Q', infile.read(struct.calcsize('Q')))[0]
-        iv = infile.read(16)
-        decryptor = AES.new(key, AES.MODE_CBC, iv)
+        initialization_vector = infile.read(16)
+        decryptor = AES.new(key, AES.MODE_CBC, initialization_vector)
         readed_hash = infile.read(64)
 
         with open(plain_filename, 'wb') as outfile:
@@ -108,8 +110,10 @@ def aes_decryption(key, enc_filename):
                     print(sty.fg.yellow + "[!] " + sty.fg.rs + "Ciphertext format error")
                     break
                 outfile.write(decryptor.decrypt(chunk))
-
-            outfile.truncate(origsize)
+            try:
+                outfile.truncate(origsize)
+            except:
+                print(sty.fg.red + "[-] " + sty.fg.rs + "invalid file")
 
         outfile_hash = hash_methods.file_hash(outfile.name)
         if outfile_hash == readed_hash:
@@ -120,3 +124,9 @@ def aes_decryption(key, enc_filename):
             print(" - cipher text is damaged")
             print("readed hash                ", outfile_hash)
             print("passed hash of orginal file", readed_hash)
+
+
+def check_extension(file_name):
+    if not str(file_name).endswith(".aes"):
+        print(sty.fg.yellow + "[!] " + sty.fg.rs +
+              "this file is propably incorrect")
