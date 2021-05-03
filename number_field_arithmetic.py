@@ -26,9 +26,7 @@ def choose_prime():
             number = input("try again ")
 
     if number != "":
-        prime = number
-        prime = int(prime)
-        return prime
+        return int(number)
 
     bits = input("b) number of bits (ec 1024) ")
 
@@ -41,7 +39,7 @@ def choose_prime():
 
 
 def modulus_aritmetic(prime):
-    """First, most basic element of our program. Does simple operations read form natural notation."""
+    """First, most basic element of our program. Does simple operations read from natural notation."""
     print("your p = ", prime)
     print("\nPlease enter statement to be calculated in modulo p," +
           "for example 45242+52435 (only two arguments), or one argument with # " +

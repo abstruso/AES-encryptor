@@ -12,29 +12,47 @@ def main():
         selector = input("Choose option ")
 
         if selector == "1":
-            number_field_arithmetic.modulus_aritmetic(number_field_arithmetic.choose_prime())
-            come_back_to_menu()
-            continue
+            case_1()
         if selector == "2":
-            file_name = hash_methods.get_file()
-            print(hash_methods.file_hash(file_name))
-            come_back_to_menu()
-            continue
+            case_2()
         if selector == "3":
-            aes_methods.aes_demonstration()
-            come_back_to_menu()
+            case_3()
         if selector == "4":
-            file_name = hash_methods.get_file()
-            aes_methods.file_encryption(file_name)
-            come_back_to_menu()
+            case_4()
         if selector == "5":
-            file_name = hash_methods.get_file()
-            aes_methods.file_decryption(file_name)
-            come_back_to_menu()
+            case_5()
         if selector == "6":
             exit()
         else:
             print("there isn't such function")
+
+
+def case_1():
+    number_field_arithmetic.modulus_aritmetic(number_field_arithmetic.choose_prime())
+    come_back_to_menu()
+
+
+def case_2():
+    file_name = hash_methods.get_file()
+    print(hash_methods.file_hash(file_name))
+    come_back_to_menu()
+
+
+def case_3():
+    aes_methods.aes_demonstration()
+    come_back_to_menu()
+
+
+def case_4():
+    file_name = hash_methods.get_file()
+    aes_methods.file_encryption(file_name)
+    come_back_to_menu()
+
+
+def case_5():
+    file_name = hash_methods.get_file()
+    aes_methods.file_decryption(file_name)
+    come_back_to_menu()
 
 
 def come_back_to_menu():

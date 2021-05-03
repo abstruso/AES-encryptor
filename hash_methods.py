@@ -7,8 +7,8 @@ def get_file():
     if file_check(file_details):
         return file_details
     else:
-        print(sty.fg.yellow+"[!] "+sty.fg.rs+"Try again")
-        file_details= input()
+        print(sty.fg.yellow + "[!] " + sty.fg.rs + "Try again")
+        file_details = input()
         if file_check(file_details):
             return file_details
         else:
